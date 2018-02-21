@@ -3,18 +3,24 @@
     <head>
         <meta charset="utf-8" />
         <title>Exchange</title>
-        <style>
-            #oreder_book strong {
-                color: white;
-                background-color: black;
-                padding: 2px;
-            }
-        </style>
         <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
         <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
         <script src="/socket.io/socket.io.js"></script>
         <link href="https://cdnjs.cloudflare.com/ajax/libs/tabulator/3.4.2/css/tabulator.min.css" rel="stylesheet">
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tabulator/3.4.2/js/tabulator.min.js"></script>
+        <style type="text/css">
+            .container {
+                width: 100%;
+            }
+            .one {
+                width: 25%;
+                float: left;
+            }
+            .two {
+                margin-left: 25%;
+                width: 25%;
+            }
+        </style>
     </head>
  
     <body>
@@ -23,16 +29,18 @@
         <form action="/" method="post" id="formulaire_trade">
             <input type="text" name="price" id="price" placeholder="Price" size="50" autofocus />
             <input type="text" name="volume" id="volume" placeholder="Volume" size="50" autofocus />
-            <input type="submit" id="envoi_trade" value="Envoyer" />
-        </form>
-        <select name="askbid" id="askbid" >
+            <select name="askbid" id="askbid" >
           <option value="ask">ask</option>
           <option value="bid">bid</option>
         </select>
+            <input type="submit" id="envoi_trade" value="Envoyer" />
+        </form>
+        
 
-
-        <div id="order_book"></div>
-
+        <section class="container">
+            <div class="one"><div id="order_book"></div></div>
+            <div class="two"><div id="txn_history"></div></div>
+        </section>
         <script>
 
             // Connecting to socket.io
@@ -41,7 +49,11 @@
             // When we receive the order book, we display it
             socket.on('orderBook', function(orderBook){
                 $("#order_book").tabulator("setData", orderBook);
-            })
+            });
+            socket.on('txnHistory', function(txnHistory){
+                $("#txn_history").tabulator("setData", txnHistory);
+            });
+
 
             // When submitting the form, we send the trade to the server
             $('#formulaire_trade').submit(function () {
@@ -73,6 +85,16 @@
                 {title:"Volume", field:"volume", sortable:true, sorter:"number"},
                 {title:"Side", field:"askbid", sortable:true},
                 {title:"Date", field:"time", sortable:true, sorter:"number"},
+              ],
+            });
+
+            // Setting up order book table fields 
+            $("#txn_history").tabulator({
+              columns:[
+                {title:"askID", field:"askID", sortable:true, sorter:"number"},
+                {title:"bidID", field:"bidID", sortable:true, sorter:"number"},
+                {title:"Price", field:"price", sortable:true, sorter:"number"},
+                {title:"Volume", field:"volume", sortable:true, sorter:"number"},
               ],
             });
         </script>
