@@ -1,0 +1,13 @@
+{
+    "name": "matching-engine",
+    "version": "0.1.0",
+    "dependencies": {
+        "body-parser": "^1.18.2",
+        "ent": "~0.1.0",
+        "express": "~3.3.4",
+        "node-cron": "^1.2.1",
+        "socket.io": "~1.2.1"
+    },
+    "author": "Leonard Lys <llys@palo-it.com>",
+    "description": "matching-engine poc"
+}
