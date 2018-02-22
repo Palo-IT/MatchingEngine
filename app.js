@@ -56,8 +56,13 @@ io.sockets.on('connection', function (socket) {
     }); 
 });
 
-cron.schedule('*/10 * * * * *', function(){
+cron.schedule('*/1 * * * * *', function(){
 	makeMatchings();
+	const used = process.memoryUsage();
+	console.log('\n------------------------\n------------------------\n');
+	for (let key in used) {
+		console.log(`${key} ${Math.round(used[key] / 1024 / 1024 * 100) / 100} MB`);
+	}
 });
 
 //This function pushes nicely a new trade to a javascript array
@@ -101,34 +106,27 @@ function makeMatchings(){
 	var volume = 0;
 	sortOrderBook();
 	if (typeof ask[0] !== 'undefined' && ask[0] !== null && typeof bid[bid.length-1] !== 'undefined' && bid[bid.length-1] !== null){
-		try{
-			while(ask[0].price <= bid[bid.length-1].price){
-				volume = Math.min(ask[0].volume, bid[bid.length-1].volume);
-				txnHistory.push({
-					'price':(ask[0].price + bid[bid.length-1].price)/2,
-					'volume' : volume,
-					'askID' : ask[0].id,
-					'bidID' : bid[bid.length-1].id
-				});
+		while(ask[0].price <= bid[bid.length-1].price){
+			volume = Math.min(ask[0].volume, bid[bid.length-1].volume);
+			txnHistory.push({
+				'price':(ask[0].price + bid[bid.length-1].price)/2,
+				'volume' : volume,
+				'askID' : ask[0].id,
+				'bidID' : bid[bid.length-1].id
+			});
 
-				ask[0].volume = ask[0].volume - volume;
-				bid[bid.length-1].volume = bid[bid.length-1].volume - volume;
-				if(ask[0].volume == 0){
-					remove(ask, ask[0]);
-					if(ask.length == 0){break;}
-					//ask.splice(0,1);
-				}
-				if(bid[bid.length-1].volume == 0){
-					remove(bid, bid[bid.length-1]);
-					if(bid.length == 0){break;}
-					//bid.splice(bid.length-1,1);
-				}
-				mktPrice = (ask[0].price + bid[bid.length-1].price)/2;
+			ask[0].volume = ask[0].volume - volume;
+			bid[bid.length-1].volume = bid[bid.length-1].volume - volume;
+			if(ask[0].volume == 0){
+				remove(ask, ask[0]);
+				if(ask.length == 0){break;}
 			}
-		}catch(error){
-			
+			if(bid[bid.length-1].volume == 0){
+				remove(bid, bid[bid.length-1]);
+				if(bid.length == 0){break;}
+			}
+			mktPrice = (ask[0].price + bid[bid.length-1].price)/2;
 		}
-		
 	}
 }
 
