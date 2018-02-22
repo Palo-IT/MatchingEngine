@@ -9,6 +9,7 @@ var express = require('express'),
     ask = [],
     bid = [],
     txnHistory = [],
+    mktPrice = 0;
     id = 0;
 
 //Setting up json parson
@@ -25,17 +26,23 @@ app.post('/api/order-book', function (req, res) {
   res.status(200).send("Trade saved");
 });
 
+//API call get order book
 app.get('/api/order-book', function(req, res){
 	res.status(200).send(JSON.stringify(ask.concat(bid)));
 });
 
+//API call get txn history
+app.get('/api/order-book', function(req, res){
+	res.status(200).send(JSON.stringify(txnHistory));
+});
 
 //When connecting to the socket
 io.sockets.on('connection', function (socket) {
 	// We update the order book every second
 	cron.schedule('1-59 * * * * *', function(){
-	  socket.broadcast.emit('orderBook',ask.concat(bid));
+	  socket.broadcast.emit('orderBook',bid.concat(ask));
 	  socket.broadcast.emit('txnHistory',txnHistory);
+	  socket.broadcast.emit('mktPrice', mktPrice);
 	});
 
 	// When we receive a trade from one of the client, it is added to the order book
@@ -45,7 +52,7 @@ io.sockets.on('connection', function (socket) {
        	//Pushing to the order book list
         pushTrade(price,volume,askbid);
         //Emitting 
-        socket.broadcast.emit('orderBook',ask.concat(bid));
+        socket.broadcast.emit('orderBook',bid.concat(ask));
     }); 
 });
 
@@ -91,26 +98,32 @@ function sortOrderBook(){
 
 
 function makeMatchings(){
+	var volume = 0;
 	sortOrderBook();
 	if (typeof ask[0] !== 'undefined' && ask[0] !== null && typeof bid[bid.length-1] !== 'undefined' && bid[bid.length-1] !== null){
 		try{
 			while(ask[0].price <= bid[bid.length-1].price){
+				volume = Math.min(ask[0].volume, bid[bid.length-1].volume);
 				txnHistory.push({
 					'price':(ask[0].price + bid[bid.length-1].price)/2,
-					'volume' : Math.min(ask[0].volume, bid[bid.length-1].volume),
+					'volume' : volume,
 					'askID' : ask[0].id,
 					'bidID' : bid[bid.length-1].id
 				});
-				ask[0].volume = ask[0].volume - Math.min(ask[0].volume, bid[bid.length-1].volume);
-				bid[bid.length-1].volume = bid[bid.length-1].volume - Math.min(ask[0].volume, bid[bid.length-1].volume);
+
+				ask[0].volume = ask[0].volume - volume;
+				bid[bid.length-1].volume = bid[bid.length-1].volume - volume;
 				if(ask[0].volume == 0){
 					remove(ask, ask[0]);
+					if(ask.length == 0){break;}
 					//ask.splice(0,1);
 				}
-				if(bid[bid.length-1] == 0){
+				if(bid[bid.length-1].volume == 0){
 					remove(bid, bid[bid.length-1]);
+					if(bid.length == 0){break;}
 					//bid.splice(bid.length-1,1);
 				}
+				mktPrice = (ask[0].price + bid[bid.length-1].price)/2;
 			}
 		}catch(error){
 			

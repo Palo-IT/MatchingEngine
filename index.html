@@ -35,6 +35,7 @@
         </select>
             <input type="submit" id="envoi_trade" value="Envoyer" />
         </form>
+        <p id="mktPrice"></p>
         
 
         <section class="container">
@@ -52,6 +53,9 @@
             });
             socket.on('txnHistory', function(txnHistory){
                 $("#txn_history").tabulator("setData", txnHistory);
+            });
+            socket.on('mktPrice', function(mktPrice){
+                $("#mktPrice").html('Market Price : '+mktPrice);
             });
 
 
