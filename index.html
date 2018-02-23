@@ -51,9 +51,11 @@
             socket.on('orderBook', function(orderBook){
                 $("#order_book").tabulator("setData", orderBook);
             });
+            //Broadcasting then transaction history
             socket.on('txnHistory', function(txnHistory){
                 $("#txn_history").tabulator("setData", txnHistory);
             });
+            //Broadcasting then market price
             socket.on('mktPrice', function(mktPrice){
                 $("#mktPrice").html('Market Price : '+mktPrice);
             });
