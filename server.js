@@ -7,6 +7,9 @@ var orderBookController = require('./orderBookController');
 //On connection
 io.on('connection', orderBookController.connection);
 
+//On trade
+io.on('trade', orderBookController.trade);
+
 //Get index
 app.get('/', orderBookController.index);
 
