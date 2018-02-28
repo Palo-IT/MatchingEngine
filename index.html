@@ -48,7 +48,6 @@
             // When we receive the order book, we display it
             socket.on('orderBook', function(orderBook){
                 $("#order_book").tabulator("setData", orderBook);
-                alert('OK');
             });
             //Broadcasting then transaction history
             socket.on('txnHistory', function(txnHistory){

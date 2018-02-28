@@ -25,7 +25,7 @@ module.exports.postTrade = function (req, res) {
   	if(req.body.askbid==='bid')
   		bid.push(new matchingEngine.Trade(req.body.price, req.body.volume, id));
   	id++;
-  	res.status(200).send("Trade saved");
+  	res.status(202).send("Trade created");
 };
 
 //Returns the order book in JSON format
@@ -39,7 +39,7 @@ module.exports.getTxnHistory =  function(req, res){
 };
 
 
-
+/*
 
 module.exports.respond = function(io){
     // this function expects a socket_io connection as argument
@@ -48,7 +48,6 @@ module.exports.respond = function(io){
 		// We update the order book every second
 		cron.schedule('1-59 * * * * *', function(){
 		  socket.broadcast.emit('orderBook',bid.concat(ask));
-		  console.log('OK');
 		  socket.broadcast.emit('txnHistory',txnHistory);
 		  socket.broadcast.emit('mktPrice', mktPrice);
 		});
@@ -69,7 +68,34 @@ module.exports.respond = function(io){
     	}); 
 	});
 }
+*/
 
+
+module.exports.connection = function(io){
+    // this function expects a socket_io connection as argument
+    // now we can do whatever we want:
+		// We update the order book every second
+		cron.schedule('1-59 * * * * *', function(){
+		  io.broadcast.emit('orderBook',bid.concat(ask));
+		  io.broadcast.emit('txnHistory',txnHistory);
+		  io.broadcast.emit('mktPrice', mktPrice);
+		});
+
+		// When we receive a trade from one of the client, it is added to the order book
+	    io.on('trade', function (price, volume, askbid) {
+	    	//Preventing XSS
+	        trade = ent.encode(price, volume, askbid);
+	       	//Pushing to the order book list
+	        if(askbid === 'ask'){
+	        	ask.push(new matchingEngine.Trade(price, volume, id));
+	        }
+	        if(askbid === 'bid'){
+	        	bid.push(new matchingEngine.Trade(price, volume, id));
+	        }
+	        //Emitting 
+        	io.broadcast.emit('orderBook',bid.concat(ask));
+    	}); 
+}
 
 //When connecting to the socket
 
