@@ -43,13 +43,12 @@
             <div class="two"><div id="txn_history"></div></div>
         </section>
         <script>
-
             // Connecting to socket.io
-            var socket = io.connect('http://localhost:8080');
-
+            var socket = io.connect('http://localhost:3000');
             // When we receive the order book, we display it
             socket.on('orderBook', function(orderBook){
                 $("#order_book").tabulator("setData", orderBook);
+                alert('OK');
             });
             //Broadcasting then transaction history
             socket.on('txnHistory', function(txnHistory){
@@ -59,8 +58,6 @@
             socket.on('mktPrice', function(mktPrice){
                 $("#mktPrice").html('Market Price : '+mktPrice);
             });
-
-
             // When submitting the form, we send the trade to the server
             $('#formulaire_trade').submit(function () {
                 var price = $('#price').val();
@@ -69,7 +66,6 @@
                 
                 //Sending the trade to the server
                 socket.emit('trade', price, volume, askbid);
-
                 //Free the text area input
                 $('#price').val('').focus(); 
                 $('#volume').val('').focus(); 
@@ -78,22 +74,21 @@
             
             // Setting up order book table fields 
             $("#order_book").tabulator({
+                /*
                 rowFormatter:function(row){
                     if(row.getData().askbid == "ask"){
                         row.getElement().css({"background-color":"#00dd00"});
                     }else{
                         row.getElement().css({"background-color":"#dd0000"});
                     }
-                },
+                },*/
               columns:[
-                {title:"ID", field:"id", sortable:true, sorter:"number"},
                 {title:"Price", field:"price", sortable:true, sorter:"number"},
                 {title:"Volume", field:"volume", sortable:true, sorter:"number"},
-                {title:"Side", field:"askbid", sortable:true},
                 {title:"Date", field:"time", sortable:true, sorter:"number"},
+                {title:"ID", field:"id", sortable:true, sorter:"number"}
               ],
             });
-
             // Setting up order book table fields 
             $("#txn_history").tabulator({
               columns:[
@@ -101,9 +96,9 @@
                 {title:"bidID", field:"bidID", sortable:true, sorter:"number"},
                 {title:"Price", field:"price", sortable:true, sorter:"number"},
                 {title:"Volume", field:"volume", sortable:true, sorter:"number"},
+                {title:"Date", field:"time", sortable:true, sorter:"number"}
               ],
             });
         </script>
     </body>
 </html>
-
