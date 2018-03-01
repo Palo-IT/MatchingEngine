@@ -15,14 +15,16 @@ function compare(a,b) {
 return 0;
 }
 
-
-function Trade(price, volume, id){
+//Trade object constructor
+function Trade(price, volume, id, side){
     this.price = price;
     this.volume = volume;
     this.time = (new Date()).getTime();
     this.id = id;
+    this.side = side;
 }
 
+//Transaction object constructor
 function Txn(price,volume, askID,bidID){
 	this.askID = askID;
 	this.bidID = bidID;
@@ -31,7 +33,7 @@ function Txn(price,volume, askID,bidID){
 	this.time = (new Date()).getTime();
 }
 
-
+//Main matching algorithm
 function makeMatchings(ask,bid, txnHistory, mktPrice){
 	var volume = 0;
 	//Sorting the orders

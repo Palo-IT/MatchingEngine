@@ -21,9 +21,9 @@ module.exports.index = function (req, res) {
 //Posting a trade
 module.exports.postTrade = function (req, res) {
 	if(req.body.askbid==='ask')
-  		ask.push(new matchingEngine.Trade(req.body.price, req.body.volume, id));
+  		ask.push(new matchingEngine.Trade(req.body.price, req.body.volume, id, 'ask'));
   	if(req.body.askbid==='bid')
-  		bid.push(new matchingEngine.Trade(req.body.price, req.body.volume, id));
+  		bid.push(new matchingEngine.Trade(req.body.price, req.body.volume, id, 'bid'));
   	id++;
   	res.status(202).send("Trade created");
 };
@@ -50,15 +50,15 @@ module.exports.connection = function(io){
 }
 
 //Pushes the trade in the order book when a trade event is triggered
-module.exports.trade = function(io,price,volume,id){
+module.exports.trade = function(io,price,volume,id, trade){
 	//Preventing XSS
     trade = ent.encode(price, volume, askbid);
    	//Pushing to the order book list
     if(askbid === 'ask'){
-    	ask.push(new matchingEngine.Trade(price, volume, id));
+    	ask.push(new matchingEngine.Trade(price, volume, id,'ask'));
     }
     if(askbid === 'bid'){
-    	bid.push(new matchingEngine.Trade(price, volume, id));
+    	bid.push(new matchingEngine.Trade(price, volume, id, 'bid'));
     }
     //Emitting 
 	io.broadcast.emit('orderBook',bid.concat(ask));

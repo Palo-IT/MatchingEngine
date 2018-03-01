@@ -55,14 +55,13 @@
             });
             //Broadcasting then market price
             socket.on('mktPrice', function(mktPrice){
-                $("#mktPrice").html('Market Price : '+mktPrice);
+                $("#mktPrice").html('Market Price : ', mktPrice);
             });
             // When submitting the form, we send the trade to the server
             $('#formulaire_trade').submit(function () {
                 var price = $('#price').val();
                 var volume = $('#volume').val();
                 var askbid = $('#askbid').val();
-                
                 //Sending the trade to the server
                 socket.emit('trade', price, volume, askbid);
                 //Free the text area input
@@ -73,19 +72,19 @@
             
             // Setting up order book table fields 
             $("#order_book").tabulator({
-                /*
                 rowFormatter:function(row){
-                    if(row.getData().askbid == "ask"){
+                    if(row.getData().side == "ask"){
                         row.getElement().css({"background-color":"#00dd00"});
                     }else{
                         row.getElement().css({"background-color":"#dd0000"});
                     }
-                },*/
+                },
               columns:[
                 {title:"Price", field:"price", sortable:true, sorter:"number"},
                 {title:"Volume", field:"volume", sortable:true, sorter:"number"},
                 {title:"Date", field:"time", sortable:true, sorter:"number"},
-                {title:"ID", field:"id", sortable:true, sorter:"number"}
+                {title:"ID", field:"id", sortable:true, sorter:"number"},
+                {title:"Side", field:"side", sortable:true},
               ],
             });
             // Setting up order book table fields 
