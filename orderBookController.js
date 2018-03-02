@@ -68,9 +68,9 @@ module.exports.trade = function(io,price,volume,id, trade){
 cron.schedule('*/1 * * * * *', function(){
 	matchingEngine.makeMatchings(ask, bid, txnHistory, mktPrice);
 	const used = process.memoryUsage();
-	//console.log('\n------------------------\n------------------------\n');
+	console.log('\n------------------------\n------------------------\n');
 	for (let key in used) {
-		//console.log(`${key} ${Math.round(used[key] / 1024 / 1024 * 100) / 100} MB`);
+		console.log(`${key} ${Math.round(used[key] / 1024 / 1024 * 100) / 100} MB`);
 	}
 });
 
