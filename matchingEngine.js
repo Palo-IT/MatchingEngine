@@ -35,6 +35,7 @@ function Txn(price,volume, askID,bidID){
 
 //Main matching algorithm
 function makeMatchings(ask,bid, txnHistory, mktPrice){
+	console.time('Make Matchings');
 	var volume = 0;
 	//Sorting the orders
 	ask.sort(compare);
@@ -68,6 +69,7 @@ function makeMatchings(ask,bid, txnHistory, mktPrice){
 			mktPrice = (ask[0].price + bid[bid.length-1].price)/2;
 		}
 	}
+	console.timeEnd("Make Matchings");
 }
 
 //Function that removes nicely a cell from an array

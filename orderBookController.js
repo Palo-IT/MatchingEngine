@@ -12,7 +12,6 @@ var txnHistory = [],
 
 var matchingEngine = require('./matchingEngine');
 
-
 //Returns the index page
 module.exports.index = function (req, res) {
   res.sendFile(__dirname + '/index.html');
@@ -27,6 +26,7 @@ module.exports.postTrade = function (req, res) {
   	id++;
   	res.status(202).send("Trade created");
 };
+
 
 //Returns the order book in JSON format
 module.exports.getOrderBook = function(req, res){
@@ -50,7 +50,7 @@ module.exports.connection = function(io){
 }
 
 //Pushes the trade in the order book when a trade event is triggered
-module.exports.trade = function(io,price,volume,id, trade){
+module.exports.trade = function(io, price, volume, askbid){
 	//Preventing XSS
     trade = ent.encode(price, volume, askbid);
    	//Pushing to the order book list
@@ -68,9 +68,9 @@ module.exports.trade = function(io,price,volume,id, trade){
 cron.schedule('*/1 * * * * *', function(){
 	matchingEngine.makeMatchings(ask, bid, txnHistory, mktPrice);
 	const used = process.memoryUsage();
-	console.log('\n------------------------\n------------------------\n');
+	//console.log('\n------------------------\n------------------------\n');
 	for (let key in used) {
-		console.log(`${key} ${Math.round(used[key] / 1024 / 1024 * 100) / 100} MB`);
+		//console.log(`${key} ${Math.round(used[key] / 1024 / 1024 * 100) / 100} MB`);
 	}
 });
 

@@ -4,7 +4,7 @@
   "description": "Rest server for matching engine",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
   "author": "Leonard Lys",
   "license": "ISC",
@@ -14,5 +14,9 @@
     "mongoose": "^5.0.7",
     "node-cron": "^1.2.1",
     "socket.io": "^2.0.4"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "mocha": "^5.0.1"
   }
 }
