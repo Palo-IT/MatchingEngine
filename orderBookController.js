@@ -13,12 +13,12 @@ var txnHistory = [],
 var matchingEngine = require('./matchingEngine');
 
 //Returns the index page
-module.exports.index = function (req, res) {
-  res.sendFile(__dirname + '/index.html');
+function index(req, res) {
+  res.status(200).sendFile(__dirname + '/index.html');
 };
 
 //Posting a trade
-module.exports.postTrade = function (req, res) {
+function postTrade(req, res) {
 	if(req.body.askbid==='ask')
   		ask.push(new matchingEngine.Trade(req.body.price, req.body.volume, id, 'ask'));
   	if(req.body.askbid==='bid')
@@ -29,18 +29,18 @@ module.exports.postTrade = function (req, res) {
 
 
 //Returns the order book in JSON format
-module.exports.getOrderBook = function(req, res){
+function getOrderBook(req, res){
 	res.status(200).send(JSON.stringify(ask.concat(bid)));
 };
 
 //Returns the transaction history in JSON format
-module.exports.getTxnHistory =  function(req, res){
+function getTxnHistory(req, res){
 	res.status(200).send(JSON.stringify(txnHistory));
 };
 
 /*Cron job that emits the order book, the transaction history and the market price
 to all clients trough a socket every second */
-module.exports.connection = function(io){
+function connection(io){
 	// We update the order book every second
 	cron.schedule('1-59 * * * * *', function(){
 	  io.broadcast.emit('orderBook',bid.concat(ask));
@@ -50,9 +50,7 @@ module.exports.connection = function(io){
 }
 
 //Pushes the trade in the order book when a trade event is triggered
-module.exports.trade = function(io, price, volume, askbid){
-	//Preventing XSS
-    trade = ent.encode(price, volume, askbid);
+function trade(io, price, volume, askbid){
    	//Pushing to the order book list
     if(askbid === 'ask'){
     	ask.push(new matchingEngine.Trade(price, volume, id,'ask'));
@@ -77,3 +75,12 @@ cron.schedule('*/1 * * * * *', function(){
 
 module.exports.router = router;
 
+module.exports = {
+  router:router,
+  trade:trade,
+  connection:connection,
+  getTxnHistory:getTxnHistory,
+  getOrderBook:getOrderBook,
+  postTrade:postTrade,
+  index:index
+}

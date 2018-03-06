@@ -83,5 +83,6 @@ function remove(array, element) {
 module.exports = {
   makeMatchings: makeMatchings,
   Trade:Trade,
-  Txn:Txn
+  Txn:Txn,
+  compare:compare
 }

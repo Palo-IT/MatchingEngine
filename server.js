@@ -8,9 +8,10 @@ var orderBookController = require('./orderBookController');
 io.on('connection', orderBookController.connection);
 
 //On trade
+//TO DEBUGG
 //io.on('trade', orderBookController.trade);
 io.on('trade', function(){
-	console.log('OK');
+	
 });
 
 //Get index
@@ -23,7 +24,7 @@ app.post('/api/order-book', orderBookController.postTrade);
 app.get('/api/order-book', orderBookController.getOrderBook);
 
 //API call get txn history
-app.get('/api/order-book', orderBookController.getTxnHistory);
+app.get('/api/transaction-history', orderBookController.getTxnHistory);
 
 
 server.listen(3000);
