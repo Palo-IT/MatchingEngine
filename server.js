@@ -9,10 +9,10 @@ io.on('connection', orderBookController.connection);
 
 //On trade
 //TO DEBUGG
-//io.on('trade', orderBookController.trade);
-io.on('trade', function(){
+io.on('trade', orderBookController.postTrade);
+//io.on('trade', function(){
 	
-});
+//});
 
 //Get index
 app.get('/', orderBookController.index);
@@ -28,3 +28,5 @@ app.get('/api/transaction-history', orderBookController.getTxnHistory);
 
 
 server.listen(3000);
+
+module.exports = server;

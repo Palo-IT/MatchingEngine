@@ -1,21 +1,24 @@
 const assert = require('chai').assert;
 var chai = require('chai');
 var chaiHttp = require('chai-http');
-const server = require('../server');
 var should = chai.should();
 chai.use(chaiHttp);
+var request = require("request");
+var expect  = require("chai").expect;
 
 describe('orderBookController', function(){
-	it('should return index page on / GET', function(){
-		chai.request(server)
-	    .get('/')
-	    .end(function(err, res){
-	      res.should.have.status(200);
-	      done();
+	it('should return index page on / GET', function(done) {
+	  request.get('http://localhost:3000/', function(err, res, body){
+	    if (err) {
+	      done(err);
+	      return;
+	    }
+	    assert.equal(201, res.statusCode);
+	    done();
 	  });
-
 	});
-	it('should add a trade do the order book on /api POST', function(){
+
+	it('should add a trade to the order book on /api POST', function(){
 
 	});
 	it('Should return the orderbook in JSON format on /api/order-book GET ', function(){
