@@ -6,8 +6,8 @@
   "scripts": {
     "unit-test": "mocha --grep matchingEngine",
     "integration-test": "mocha --grep server",
-    "start": "forever start app.js",
-    "stop": "forever stopall",
+    "start": "start app.js",
+    "stop": "stopall",
     "test": "mocha"
   },
   "author": "Leonard Lys",

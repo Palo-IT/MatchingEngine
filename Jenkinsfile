@@ -14,9 +14,14 @@ pipeline {
                 sh 'npm install'
             }
         }
-        stage('Test') {
+        stage('UnitTest') {
             steps {
-                sh './jenkins/scripts/test.sh'
+                sh './jenkins/scripts/unitTest.sh'
+            }
+        }
+        stage('IntrgrationTest') {
+            steps {
+                sh './jenkins/scripts/integrationTest.sh'
             }
         }
         stage('Deliver') {
