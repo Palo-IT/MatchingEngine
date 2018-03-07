@@ -30,11 +30,13 @@ function postTrade(req, res) {
 
 //Returns the order book in JSON format
 function getOrderBook(req, res){
+	res.set('Content-Type', 'application/json');
 	res.status(200).send(JSON.stringify(ask.concat(bid)));
 };
 
 //Returns the transaction history in JSON format
 function getTxnHistory(req, res){
+	res.set('Content-Type', 'application/json');
 	res.status(200).send(JSON.stringify(txnHistory));
 };
 
