@@ -4,7 +4,8 @@
   "description": "Rest server for matching engine",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "unit-test": "mocha --grep matchingEngine",
+    "integration-test": "mocha --grep server"
   },
   "author": "Leonard Lys",
   "license": "ISC",

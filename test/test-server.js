@@ -6,7 +6,7 @@ chai.use(chaiHttp);
 var request = require("request");
 var expect  = require("chai").expect;
 
-describe('orderBookController', function(){
+describe('server', function(){
 	//Test the GET on /
 	it('should return index page on / GET', function(done) {
 		var url = 'http://localhost:3000/';
