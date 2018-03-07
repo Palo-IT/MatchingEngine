@@ -5,7 +5,10 @@
   "main": "index.js",
   "scripts": {
     "unit-test": "mocha --grep matchingEngine",
-    "integration-test": "mocha --grep server"
+    "integration-test": "mocha --grep server",
+    "start": "forever start app.js",
+    "stop": "forever stopall",
+    "test": "mocha"
   },
   "author": "Leonard Lys",
   "license": "ISC",
