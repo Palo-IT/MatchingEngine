@@ -33,7 +33,7 @@
           <option value="ask">ask</option>
           <option value="bid">bid</option>
         </select>
-            <input type="submit" id="envoi_trade" value="Envoyer" />
+            <input type="submit" name="submit" value="Send trade" />
         </form>
         <p id="mktPrice"></p>
         
@@ -57,19 +57,24 @@
             socket.on('mktPrice', function(mktPrice){
                 $("#mktPrice").html('Market Price : ', mktPrice);
             });
-            // When submitting the form, we send the trade to the server
-            $('#formulaire_trade').submit(function () {
-                var price = $('#price').val();
-                var volume = $('#volume').val();
-                var askbid = $('#askbid').val();
-                //Sending the trade to the server
-                socket.emit('trade', price, volume, askbid);
-                //Free the text area input
-                $('#price').val('').focus(); 
-                $('#volume').val('').focus(); 
-                return false;
-            }); 
             
+            //Posting trade form
+            $("#formulaire_trade").submit(function(event){
+                event.preventDefault();
+                var post_url = $(this).attr("action"); 
+                var request_method = $(this).attr("method"); 
+                var form_data = $(this).serialize();
+                $.ajax({
+                    url : post_url,
+                    type: request_method,
+                    data : form_data
+                }).done(function(response){
+                    $("#server-results").html(response);
+                    $('#price').val('').focus(); 
+                    $('#volume').val('').focus(); 
+                });
+            });
+
             // Setting up order book table fields 
             $("#order_book").tabulator({
                 rowFormatter:function(row){

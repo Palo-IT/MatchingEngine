@@ -7,12 +7,8 @@ var orderBookController = require('./orderBookController');
 //On connection
 io.on('connection', orderBookController.connection);
 
-//On trade
-//TO DEBUGG
-io.on('trade', orderBookController.postTrade);
-//io.on('trade', function(){
-	
-//});
+//On trade POST on /
+app.post('/', orderBookController.postTrade);
 
 //Get index
 app.get('/', orderBookController.index);

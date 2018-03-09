@@ -36,7 +36,6 @@ describe('server', function(){
 		  },
 		  json: true 
 		};
-
 		request.post(postData, function(err, res, body){
 			if(err){
 				done(err);

@@ -7,7 +7,7 @@ var cron = require('node-cron');
 var txnHistory = [],
 	ask = [],
 	bid = [],
-    mktPrice = 0;
+  mktPrice = 0;
 	id = 0;
 
 var matchingEngine = require('./matchingEngine');
@@ -17,14 +17,22 @@ function index(req, res) {
   res.status(200).sendFile(__dirname + '/index.html');
 };
 
+//Validate trade
+function validateTrade(price, side){
+  if(price>=0 && (side==='ask'||side==='bid'))
+    return 1;
+  else 
+    return 0;
+}
+
 //Posting a trade
-function postTrade(req, res) {
-	if(req.body.askbid==='ask')
+function postTrade(req, res){
+	if(req.body.askbid === 'ask' && validateTrade(req.body.price, req.body.askbid))
   		ask.push(new matchingEngine.Trade(req.body.price, req.body.volume, id, 'ask'));
-  	if(req.body.askbid==='bid')
+  if(req.body.askbid === 'bid' && validateTrade(req.body.price, req.body.askbid))
   		bid.push(new matchingEngine.Trade(req.body.price, req.body.volume, id, 'bid'));
-  	id++;
-  	res.status(202).send("Trade created");
+  id++;
+  res.status(202).send("Trade created");
 };
 
 
@@ -49,19 +57,6 @@ function connection(io){
 	  io.broadcast.emit('txnHistory',txnHistory);
 	  io.broadcast.emit('mktPrice', mktPrice);
 	});
-}
-
-//Pushes the trade in the order book when a trade event is triggered
-function trade(io, price, volume, askbid){
-   	//Pushing to the order book list
-    if(askbid === 'ask'){
-    	ask.push(new matchingEngine.Trade(price, volume, id,'ask'));
-    }
-    if(askbid === 'bid'){
-    	bid.push(new matchingEngine.Trade(price, volume, id, 'bid'));
-    }
-    //Emitting 
-	io.broadcast.emit('orderBook',bid.concat(ask));
 }
 
 //Main cron job that calls the matching engine 
