@@ -11,7 +11,6 @@ var txnHistory = [],
 	id = 0;
 
 var matchingEngine = require('./matchingEngine');
-
 //Returns the index page
 function index(req, res) {
   res.status(200).sendFile(__dirname + '/index.html');
@@ -19,18 +18,58 @@ function index(req, res) {
 
 //Validate trade
 function validateTrade(price, side){
-  if(price>=0 && (side==='ask'||side==='bid'))
+  if(price>=0 && (side === 'ask'|| side === 'bid'))
     return 1;
   else 
     return 0;
 }
 
+
+/*
+
+//Following function might be more efficient that the native javascript sort function
+
+here is a other implementation guide 
+
+http://blog.benoitvallon.com/sorting-algorithms-in-javascript/the-quicksort-algorithm/
+
+function insert(element, array) {
+  array.splice(locationOf(element, array), 0, element);
+  return array;
+}
+
+function locationOf(element, array, start, end) {
+  start = start || 0;
+  end = end || array.length;
+  //var pivot = parseInt(start + (end - start) / 2, 10);
+  var pivot = Math.floor(start + (end - start)/2);
+  console.log('pivot : ', pivot);
+  if (end-start <= 1 || array[pivot].price === element.price) 
+    return pivot;
+  if (array[pivot].price < element.price) {
+    return locationOf(element, array, pivot, end);
+  } else {
+    return locationOf(element, array, start, pivot);
+  }
+}
+*/
+
+
+
+
+
 //Posting a trade
 function postTrade(req, res){
 	if(req.body.askbid === 'ask' && validateTrade(req.body.price, req.body.askbid))
-  		ask.push(new matchingEngine.Trade(req.body.price, req.body.volume, id, 'ask'));
+  {
+      ask.push(new matchingEngine.Trade(req.body.price, req.body.volume, id, 'ask'));
+      ask.sort(matchingEngine.compare);
+  }
   if(req.body.askbid === 'bid' && validateTrade(req.body.price, req.body.askbid))
-  		bid.push(new matchingEngine.Trade(req.body.price, req.body.volume, id, 'bid'));
+  {
+      bid.push(new matchingEngine.Trade(req.body.price, req.body.volume, id, 'bid'));
+      bid.sort(matchingEngine.compare);
+  }
   id++;
   res.status(202).send("Trade created");
 };
@@ -74,7 +113,6 @@ module.exports.router = router;
 
 module.exports = {
   router:router,
-  trade:trade,
   connection:connection,
   getTxnHistory:getTxnHistory,
   getOrderBook:getOrderBook,

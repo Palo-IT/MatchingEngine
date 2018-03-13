@@ -30,10 +30,10 @@
             <input type="text" name="price" id="price" placeholder="Price" size="50" autofocus />
             <input type="text" name="volume" id="volume" placeholder="Volume" size="50" autofocus />
             <select name="askbid" id="askbid" >
-          <option value="ask">ask</option>
-          <option value="bid">bid</option>
-        </select>
-            <input type="submit" name="submit" value="Send trade" />
+                <option value="ask">ask</option>
+                <option value="bid">bid</option>
+            </select>
+            <input type="submit" name="submit" value="Send trade"/>
         </form>
         <p id="mktPrice"></p>
         
@@ -42,6 +42,7 @@
             <div class="one"><div id="order_book"></div></div>
             <div class="two"><div id="txn_history"></div></div>
         </section>
+        
         <script>
             // Connecting to socket.io
             var socket = io.connect('http://localhost:3000');
