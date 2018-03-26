@@ -33,6 +33,8 @@ here is a other implementation guide
 
 http://blog.benoitvallon.com/sorting-algorithms-in-javascript/the-quicksort-algorithm/
 
+https://github.com/benoitvallon/computer-science-in-javascript/tree/master/sorting-algorithms-in-javascript
+
 function insert(element, array) {
   array.splice(locationOf(element, array), 0, element);
   return array;
