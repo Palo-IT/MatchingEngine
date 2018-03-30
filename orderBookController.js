@@ -4,11 +4,11 @@ var bodyParser = require('body-parser');
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(bodyParser.json());
 var cron = require('node-cron');
-var txnHistory = [],
-	ask = [],
-	bid = [],
-  mktPrice = 0;
-	id = 0;
+var txnHistory = [];
+var ask = [];
+var	bid = [];
+var mktPrice = 0;
+var id = 0;
 
 var matchingEngine = require('./matchingEngine');
 //Returns the index page
@@ -62,18 +62,19 @@ function locationOf(element, array, start, end) {
 
 //Posting a trade
 function postTrade(req, res){
+  var price = parseFloat(req.body.price);
 	if(req.body.askbid === 'ask' && validateTrade(req.body.price, req.body.askbid))
   {
-      ask.push(new matchingEngine.Trade(req.body.price, req.body.volume, id, 'ask'));
-      ask.sort(matchingEngine.compare);
+    ask.push(new matchingEngine.Trade(price, req.body.volume, id, 'ask'));
+    ask.sort(matchingEngine.compare);
   }
   if(req.body.askbid === 'bid' && validateTrade(req.body.price, req.body.askbid))
   {
-      bid.push(new matchingEngine.Trade(req.body.price, req.body.volume, id, 'bid'));
-      bid.sort(matchingEngine.compare);
+    bid.push(new matchingEngine.Trade(price, req.body.volume, id, 'bid'));
+    bid.sort(matchingEngine.compare);
   }
   id++;
-  res.status(202).send("Trade created");
+  return res.status(202).send("Trade created");
 };
 
 

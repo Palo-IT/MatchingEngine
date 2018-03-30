@@ -37,7 +37,7 @@ function Txn(price,volume, askID,bidID){
 function makeMatchings(ask,bid, txnHistory, mktPrice){
 	console.time('Make Matchings');
 	var volume = 0;
-	if (typeof ask[0] !== 'undefined' && ask[0] !== null && typeof bid[bid.length-1] !== 'undefined' && bid[bid.length-1] !== null){
+	if ((typeof(ask[0]) != 'undefined') && (ask[0] != null) && (typeof(bid[bid.length-1]) != 'undefined') && (bid[bid.length-1] != null)){
 		//While there are possible matchings
 		while(ask[0].price <= bid[bid.length-1].price){
 			//Setting the volume of the match to the minimum of the two matching engine
