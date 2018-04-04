@@ -19,6 +19,9 @@ app.post('/api/order-book', orderBookController.postTrade);
 //API call get order book
 app.get('/api/order-book', orderBookController.getOrderBook);
 
+//API call custom order book for Charts
+app.get('/api/custom-order-book', orderBookController.getCustomOrderBook);
+
 //API call get txn history
 app.get('/api/transaction-history', orderBookController.getTxnHistory);
 

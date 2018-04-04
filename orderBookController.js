@@ -90,6 +90,40 @@ function getTxnHistory(req, res){
 	res.status(200).send(JSON.stringify(txnHistory));
 };
 
+//This recursive function agregates two trades if they have same price
+function compareNext(array, i){
+    if(array[i]['price']===array[i+1]['price']){
+      array[i]['volume'] = array[i]['volume'] + array[i+1]['volume'];
+      matchingEngine.remove(array, array[i+1]);
+      if(typeof(array[i+1]) != 'undefined')
+        compareNext(array, i);
+    }
+  }
+
+function getCustomOrderBook(req, res){
+  var i =0;
+  var asks = Object.assign(ask);
+  var bids = Object.assign(bid);
+  var array = {};
+
+  for(i = 0; i<asks.length - 1 ; i++){
+    compareNext(asks, i);
+  }
+  for(i = 0; i<bids.length - 1; i++){
+    compareNext(bids, i);
+  }
+  array['asks'] = [];
+  for(i = 0; i<asks.length; i++){
+    array['asks'].push([asks[i].price.toString(), asks[i].volume]);
+  }
+  array['bids'] = [];
+  for(i = 0; i<bids.length; i++){
+    array['bids'].push([bids[i].price.toString(), bids[i].volume]);
+  }
+  res.set('Content-Type', 'application/json');
+  res.status(200).send(JSON.stringify(array));
+}
+
 /*Cron job that emits the order book, the transaction history and the market price
 to all clients trough a socket every second */
 function connection(io){
@@ -120,5 +154,6 @@ module.exports = {
   getTxnHistory:getTxnHistory,
   getOrderBook:getOrderBook,
   postTrade:postTrade,
-  index:index
+  index:index,
+  getCustomOrderBook, getCustomOrderBook
 }

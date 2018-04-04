@@ -35,7 +35,7 @@ function Txn(price,volume, askID,bidID){
 
 //Main matching algorithm
 function makeMatchings(ask,bid, txnHistory, mktPrice){
-	console.time('Make Matchings');
+	//console.time('Make Matchings');
 	var volume = 0;
 	if ((typeof(ask[0]) != 'undefined') && (ask[0] != null) && (typeof(bid[bid.length-1]) != 'undefined') && (bid[bid.length-1] != null)){
 		//While there are possible matchings
@@ -66,7 +66,7 @@ function makeMatchings(ask,bid, txnHistory, mktPrice){
 			mktPrice = (ask[0].price + bid[bid.length-1].price)/2;
 		}
 	}
-	console.timeEnd("Make Matchings");
+	//console.timeEnd("Make Matchings");
 }
 
 //Function that removes nicely a cell from an array
@@ -81,5 +81,6 @@ module.exports = {
   makeMatchings: makeMatchings,
   Trade:Trade,
   Txn:Txn,
-  compare:compare
+  compare:compare,
+  remove:remove
 }
